@@ -1,0 +1,64 @@
+#!/usr/bin/env node
+
+const chalk = require('chalk')
+const program = require('commander')
+const download = require('download-git-repo')
+const inquirer = require('inquirer')
+const ora = require('ora')
+const package = require("../package.json")
+
+/**
+* Usage
+*/
+program
+  .usage('<template-name> [project-name]')
+  .option('-c, --clone', 'clone the project from github')
+  .option('--gitlab', 'clone the project from gitlab')
+
+
+/**
+* Help
+*/
+program.on('--help', () => {
+  console.log('  Usage:')
+  console.log()
+  console.log(chalk.gray('    # create a new project with an default template'))
+  console.log('    $ im init preact my-project')
+  console.log()
+  console.log(chalk.gray('    # create a new project from a github template'))
+  console.log('    $ im init username/repo my-project')
+  console.log(chalk.gray('    # create a new project from a gitlab template'))
+  console.log('    $ im init groups-name/repo my-project')
+  console.log()
+})
+
+// 解析命令行输入的参数
+program.parse(process.argv)
+
+// 模板名
+let tplName = program.args[0]
+// 项目名
+let projectName = './' + program.args[1]
+// 模板链接
+let downloadUrl = ''
+
+if (program.gitlab) {
+  downloadUrl = package.config.gitLabUrl
+} else {
+  downloadUrl = package.config.githubUrl
+}
+
+downloadUrl += tplName
+
+downloadRepo()
+/**
+* 下载
+*/
+function downloadRepo () {
+  const spinner = ora('downloading template...')
+  spinner.start()
+  download(downloadUrl, projectName, { clone: true }, (err) => {
+    spinner.stop()
+    console.log(err ? 'Error' : 'Success')
+  })
+}

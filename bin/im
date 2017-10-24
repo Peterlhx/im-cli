@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+
+const program = require('commander')
+
+program
+  .version(require('../package').version)
+  .usage('<command> [options]')
+  .command('init', 'Generate a new project from a template,\n\t\t eg: im init preact-sample my-project')
+  .command('list', 'List all the templates')
+  .parse(process.argv)
+
+if (!program.args.length) {
+  program.help()
+}

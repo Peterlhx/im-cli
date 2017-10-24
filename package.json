@@ -1,0 +1,37 @@
+{
+  "name": "im-cli",
+  "version": "1.0.0",
+  "description": "a CLI which build web front end project quickly, which can choose a few of templates",
+  "main": "index.js",
+  "bin": {
+    "im": "bin/im",
+    "im-init": "bin/im-init"
+  },
+  "config": {
+    "githubUrl": "github:Peterlhx/",
+    "gitLabUrl": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vuejs/vue-cli.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "web front end",
+    "cli"
+  ],
+  "author": "Peter Lee",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.1.0",
+    "commander": "^2.11.0",
+    "download-git-repo": "^1.0.1",
+    "inquirer": "^3.3.0",
+    "ora": "^1.3.0"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  }
+}
