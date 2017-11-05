@@ -6,7 +6,7 @@ const download = require('download-git-repo')
 const inquirer = require('inquirer')
 const ora = require('ora')
 const package = require("../package.json")
-
+const childProcess = require('child_process')
 /**
 * Usage
 */
@@ -41,11 +41,15 @@ let tplName = program.args[0]
 let projectName = './' + program.args[1]
 // 模板链接
 let downloadUrl = ''
+// 下载源
+let downloadSrc = ''
 
 if (program.gitlab) {
   downloadUrl = package.config.gitLabUrl
+  downloadSrc = 'gitlab'
 } else {
   downloadUrl = package.config.githubUrl
+  downloadSrc = 'github'
 }
 
 downloadUrl += tplName
@@ -55,10 +59,24 @@ downloadRepo()
 * 下载
 */
 function downloadRepo () {
-  const spinner = ora('downloading template...')
-  spinner.start()
+  const down_spinner = ora(`downloading ${tplName} template from ${downloadSrc}...`)
+  const install_spinner = ora('Now install the dependencies...')
+  down_spinner.start()
   download(downloadUrl, projectName, { clone: true }, (err) => {
-    spinner.stop()
-    console.log(err ? 'Error' : 'Success')
+    down_spinner.stop()
+
+    if (err) {
+      console.log(chalk.red('Error! Download the template failed, Please try again!'))
+    } else {
+      console.log(chalk.green('Success! '))
+      install_spinner.start()
+
+      childProcess.exec(`cd ${projectName} && cnpm install`, function (err, stdout, stderr) {
+        if (!err) {
+          install_spinner.stop()
+          console.log(chalk.green('All packages have installed!'))
+        }
+      })
+    }
   })
 }
